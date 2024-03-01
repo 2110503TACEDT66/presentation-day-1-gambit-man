@@ -20,3 +20,7 @@ const server = app.listen(PORT, console.log('Sever runnig in',process.env.NODE_E
 app.get('/',(req,res) => {
     res.status(200).json({success:true,data:{id:1}});
 });
+
+app.delete('/',(req,res) => {
+    res.status(200).json({success:true,data:{id:1}});
+});
