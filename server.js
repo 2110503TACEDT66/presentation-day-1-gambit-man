@@ -12,6 +12,13 @@ const server = app.listen(
   console.log('Sever runnig in', process.env.NODE_ENV, ' mode on port ', PORT)
 );
 
+//Handle unhandled promise rejection
+process.on('unhandledRejection',(err,promise)=>{
+  console.log(`Error: ${err.message}`);
+  server.close(()=>process.exit(1));
+});
+
+
 app.get('/', (req, res) => {
   res.status(200).json({ success: true, data: { id: 1 } });
 });
