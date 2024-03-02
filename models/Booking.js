@@ -1,29 +1,27 @@
 const mongoose = require('mongoose');
 
 const BookingSchema = new mongoose.Schema({
-    BookingDate: {
-        type: Date,
-        required:true
-    },
-    user:{
-        type:mongoose.Schema.ObjectId,
-        ref: 'User',
-        required:[true,'Please add an User']
-    },
-    provider:{
-        type:mongoose.Schema.ObjectId,
-        ref: 'Booking',
-        required:[true,'Please add an provider']
-    },
-    createdAt:{
-        type:Date,
-        default: Date.now
-    }
+  BookingDate: {
+    type: Date,
+    required: true,
+  },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: [true, 'Please add an User'],
+  },
+  provider: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Booking',
+    required: [true, 'Please add an provider'],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-module.exports=mongoose.model('Booking',BookingSchema);
-
-
+module.exports = mongoose.model('Booking', BookingSchema);
 
 //2023-05-15T17:00:00.000Z
 //65d7059d1390bf7d394238d1 hospital
