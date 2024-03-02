@@ -14,7 +14,7 @@ exports.getProviders = async (req, res, next) => {
       (match) => `$${match}`
     );
 
-    query = Provider.find(JSON.parse(queryStr)).populate('booking');
+    query = Provider.find(JSON.parse(queryStr)).populate('bookings');
 
     if (req.query.select) {
       const fields = req.query.select.split(',').join(' ');
