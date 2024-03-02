@@ -13,8 +13,10 @@ const sendTokenResponse = (user, statusCode, res) => {
   }
   res.status(statusCode).cookie('token', token, options).json({
     success: true,
+    data:user,
     token,
   });
+  console.log(user);
 };
 
 exports.register = async (req, res, next) => {

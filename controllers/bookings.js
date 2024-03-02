@@ -97,6 +97,7 @@ exports.addBooking = async (req, res, next) => {
       success: true,
       data: booking,
     });
+    console.log(booking);
   } catch (err) {
     console.log(err);
     res.status(500).json({
