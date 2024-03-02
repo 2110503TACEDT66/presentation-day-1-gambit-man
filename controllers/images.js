@@ -53,7 +53,7 @@ exports.uploadImages = async (req, res) => {
   try {
     req.body.user = req.user.id;
 
-    if (!req.files) {
+    if (!req.files || req.files.length === 0) {
       return res.status(400).json({
         success: false,
         message: 'No files uploaded',
@@ -134,6 +134,13 @@ exports.updateImage = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'No files uploaded',
+      });
+    }
+
+    if (!req.file.buffer) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid file format',
       });
     }
 
