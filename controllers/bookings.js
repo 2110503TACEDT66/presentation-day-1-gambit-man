@@ -69,6 +69,8 @@ exports.addBooking = async (req, res, next) => {
   try {
     req.body.provider = req.params.providerId;
 
+    console.log(req.params.providerId);
+
     const provider = await Provider.findById(req.params.providerId);
 
     if (!provider) {
@@ -87,7 +89,7 @@ exports.addBooking = async (req, res, next) => {
     if (existedBooking.length >= 3 && req.user.role !== 'admin') {
       return res.status(400).json({
         success: false,
-        message: 'he user with ID ${req.user.id} has already made 3 bookings',
+        message: `he user with ID ${req.user.id} has already made 3 bookings`,
       });
     }
 
@@ -98,6 +100,7 @@ exports.addBooking = async (req, res, next) => {
       data: booking,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       success: false,
       message: 'Cannot add booking',
