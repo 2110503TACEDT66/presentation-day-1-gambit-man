@@ -8,7 +8,7 @@ const UserSchema= new mongoose.Schema({
         required:[true,'Please add a name'],
         match: [
             /^[a-zA-Z]+$/
-        ]
+        ],
     },
     email:{
         type: String,
@@ -33,7 +33,7 @@ const UserSchema= new mongoose.Schema({
     password: {
         type:String,
         required:[true,'Please add a password'],
-        minlenght: 8,
+        minlength: 8,
         select: false
     },
     resetPasswordToken: String,
