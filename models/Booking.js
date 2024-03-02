@@ -8,14 +8,12 @@ const BookingSchema = new mongoose.Schema({
     user:{
         type:mongoose.Schema.ObjectId,
         ref: 'User',
-        unique: true,
         required:[true,'Please add an User']
     },
-    providerCar:{
+    provider:{
         type:mongoose.Schema.ObjectId,
         ref: 'Booking',
-        unique: true,
-        required:[true,'Please add an providerCar']
+        required:[true,'Please add an provider']
     },
     createdAt:{
         type:Date,
