@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
+const providers = require('./routes/providers.js');
+const auth = require('./routes/auth');
+const bookings = require('./routes/bookings.js');
+
 dotenv.config({ path: './config/config.env' });
 const PORT = process.env.PORT || 5000;
 const connectDB = require('./config/db.js');
@@ -19,14 +23,9 @@ process.on('unhandledRejection',(err,promise)=>{
 });
 
 
-app.get('/', (req, res) => {
-  res.status(200).json({ success: true, data: { id: 1 } });
-});
+app.use('/api/v1/providers',providers);
+app.use('/api/v1/auth',auth);
+app.use('/api/v1/bookings',bookings);
 
-app.delete('/', (req, res) => {
-  res.status(200).json({ success: true, data: { id: 1 } });
-});
 
-app.put('/', (req, res) => {
-  res.status(200).json({ success: true, data: { id: 1 } });
-});
+
