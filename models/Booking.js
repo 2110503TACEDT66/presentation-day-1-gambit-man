@@ -6,13 +6,13 @@ const BookingSchema = new mongoose.Schema({
     required: true,
   },
   user: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Please add an User'],
   },
   provider: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Booking',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Provider',
     required: [true, 'Please add an provider'],
   },
   createdAt: {
