@@ -4,6 +4,7 @@ const ProviderSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      unique: true,
       required: [true, 'Please add a name'],
       maxlength: [50, 'name can not be more than 50 characters'],
     },
