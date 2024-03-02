@@ -69,8 +69,6 @@ exports.addBooking = async (req, res, next) => {
   try {
     req.body.provider = req.params.providerId;
 
-    console.log(req.params.providerId);
-
     const provider = await Provider.findById(req.params.providerId);
 
     if (!provider) {
