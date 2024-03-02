@@ -13,7 +13,6 @@ const ProviderSchema = new mongoose.Schema(
     },
     tel: {
       type: String,
-      unique: true,
       required: [true, 'Please add a telephone number'],
       match: [
         /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/
