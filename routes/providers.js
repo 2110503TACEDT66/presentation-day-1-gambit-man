@@ -3,7 +3,7 @@ const router = express.Router();
 const {protect,authorization} = require('../middleware/auth');
 
 
-const {getProviders,getProvider,createProvider,updateProvider,deleteProvider} = require('../controllers/hospitals');
+const {getProviders,getProvider,createProvider,updateProvider,deleteProvider} = require('../controllers/providers');
 
 const bookingRouter=require('./bookings');
 
