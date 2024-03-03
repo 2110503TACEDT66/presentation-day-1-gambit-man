@@ -1,0 +1,22 @@
+@startuml Car Booking System Use Case Diagram
+left to right direction
+actor "User" as user
+rectangle "Car Booking System" as CarBookingSystem {    
+    usecase "Register" as Register
+    usecase "View\nRental Provider" as ViewRental
+    usecase "Manage\nBooking" as ManageBooking
+    usecase "Manage\nRental Provider" as ManageRental
+}
+
+user -- Register
+user -- ViewRental
+user -- ManageBooking
+
+actor "Admin" as Admin
+Register -- Admin
+ViewRental -- Admin
+ManageBooking -- Admin
+ManageRental -- Admin
+
+
+@enduml
