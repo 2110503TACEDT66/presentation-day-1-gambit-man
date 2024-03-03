@@ -48,7 +48,7 @@ package "Car Booking"{
         -createAt
     }
 
-    class "<<Representation>>\nUser" as RepresentationProvider {
+    class "<<Representation>>\nProvider" as RepresentationProvider {
         -name
         -address
         -tel
