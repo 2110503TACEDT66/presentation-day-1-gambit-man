@@ -1,0 +1,77 @@
+@startuml Car Booking System Use Case Diagram
+left to right direction
+package "Car Booking"{
+    class "<<Application>>\nCarBooking" as CarBooking{}
+
+    class "<<Resource>>\nAuth" as ResourceAuth{
+        <<GET>> +getMe():User
+        <<GET>> +logout():void
+        <<POST>> +login():token
+        <<POST>> +register():User
+    }
+
+    class "<<Resource>>\nBooking" as ResourceBooking2 {
+        <<GET>> +getBooking(): Booking
+        <<PUT>> +updateBooking(): Booking
+        <<DELETE>> +updateBooking(): void
+    }
+
+    class "<<Resource>>\nBooking" as ResourceBooking {
+        <<GET>> +getBookings(): Booking
+        <<POST>> +addBooking(): Booking
+    }
+
+    class "<<Resource>>\nProvider" as ResourceProvider{
+        <<GET>> +getProviders():Provider
+        <<POST>> +createProvider():Provider
+    }
+
+    class "<<Resource>>\nProvider" as ResourceProvider2{
+        <<GET>> +getProvider():Provider
+        <<PUT>> +updateProvider():Provider
+        <<DELETE>> +deleteProvider(): void
+    }
+
+    class "<<Representation>>\nBooking" as RepresentationBooking {
+        -BookingDate
+        -user
+        -provider
+        -createAt
+    }
+
+    class "<<Representation>>\nUser" as RepresentationUser {
+        -name
+        -email
+        -role
+        -tel
+        -password
+        -createAt
+    }
+
+    class "<<Representation>>\nProvider" as RepresentationProvider {
+        -name
+        -address
+        -tel
+    }
+
+
+}
+
+CarBooking ..> ResourceAuth:"/api/v1/auth/register\n<<Path>>"
+CarBooking ..> ResourceAuth:"/api/v1/auth/login\n<<Path>>"
+CarBooking ..> ResourceAuth:"/api/v1/auth/me\n<<Path>>"
+CarBooking ..> ResourceAuth:"/api/v1/auth/logout\n<<Path>>"
+
+CarBooking ..> ResourceBooking:"/api/v1/bookings"
+
+CarBooking ..> ResourceProvider:"/api/v1/providers"
+
+ResourceBooking ..>ResourceBooking2: "/{bookingId}"
+ResourceAuth ..>RepresentationUser: "<<use>>"
+ResourceBooking2 ..>RepresentationBooking: "<<use>>"
+ResourceProvider ..> ResourceProvider2: "/{providerId}"
+ResourceProvider2 ..>RepresentationProvider:"<<use>>"
+' ResourceAuth ..> ResourceHospital: "/{hospitalId}\n<<Path>>"
+' ResourceHospital ..> RepresentationHospital: "<<use>>"
+
+@enduml
