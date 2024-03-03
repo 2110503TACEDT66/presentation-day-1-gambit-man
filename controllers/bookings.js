@@ -135,10 +135,12 @@ exports.updateBooking = async (req, res, next) => {
       data: booking,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       success: false,
       message: 'Cannot update booking',
     });
+    
   }
 };
 
