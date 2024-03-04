@@ -2,7 +2,7 @@ const express = require('express');
 const {
   getImages,
   getImage,
-  uploadImages,
+  uploadImage,
   updateImage,
   deleteImage,
 } = require('../controllers/images');
@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
 router
   .route('/')
   .get(protect, getImages)
-  .post(protect, upload.single('image'), uploadImages);
+  .post(protect, upload.single('image'), uploadImage);
 
 router
   .route('/:id')

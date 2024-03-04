@@ -49,7 +49,7 @@ exports.getImage = async (req, res) => {
   }
 };
 
-exports.uploadImages = async (req, res) => {
+exports.uploadImage = async (req, res) => {
   try {
     const existedImage = await Image.findOne({
       user: req.user.id,

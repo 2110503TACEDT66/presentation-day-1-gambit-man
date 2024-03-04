@@ -32,9 +32,9 @@ package "Car Booking"{
         <<DELETE>> +deleteProvider(): void
     }
 
-    class "<<Resource>>\nProvider" as ResourceImage{
+    class "<<Resource>>\nImage" as ResourceImage{
         <<GET>> +getImages():Image
-        <<POST>> +uploadImages():Image
+        <<POST>> +uploadImage():Image
     }
 
     class "<<Resource>>\nImage" as ResourceImage2{
@@ -66,9 +66,8 @@ package "Car Booking"{
     }
 
     class "<<Representation>>\nImage" as RepresentationImage {
-        -name
-        -address
-        -tel
+        -image
+        -user
     }
 
 
@@ -90,7 +89,7 @@ ResourceBooking2 ..>RepresentationBooking: "<<use>>"
 ResourceProvider ..> ResourceProvider2: "/{providerId}"
 ResourceProvider2 ..>RepresentationProvider:"<<use>>"
 
-CarBooking ..> ResourceImage:"/api/v1/bookings"
+CarBooking ..> ResourceImage:"/api/v1/images"
 ResourceImage ..> ResourceImage2:"/{imageId}"
 ResourceImage2 ..> RepresentationImage:"<<use>>"
 ' ResourceAuth ..> ResourceHospital: "/{hospitalId}\n<<Path>>"
