@@ -3,9 +3,9 @@ const axios = require('axios');
 
 exports.getImages = async (req, res) => {
   try {
-    const images = await Image.find({ user: req.user.id });
+    const images = await Image.find();
 
-    if (!images || images.length === 0) {
+    if (!images) {
       return res.status(400).json({
         success: false,
         message: 'No images found',
@@ -51,62 +51,55 @@ exports.getImage = async (req, res) => {
 
 exports.uploadImages = async (req, res) => {
   try {
+    const existedImage = await Image.findOne({
+      user: req.user.id,
+    });
+
+    if (existedImage) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have already uploaded an image',
+      });
+    }
+
     req.body.user = req.user.id;
 
-    if (!req.files || req.files.length === 0) {
+    if (!req.file) {
       return res.status(400).json({
         success: false,
         message: 'No files uploaded',
       });
     }
 
-    const imgurResponses = [];
-
-    for (const file of req.files) {
-      console.log('File details:', file);
-
-      if (!file.buffer) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid file format',
-        });
-      }
-
-      const base64Image = file.buffer.toString('base64');
-
-      const imgurResponse = await axios.post(
-        'https://api.imgur.com/3/image',
-        {
-          image: base64Image,
-        },
-        {
-          headers: {
-            Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-          },
-        }
-      );
-
-      if (imgurResponse.data.success) {
-        console.log('Imgur upload successful:', imgurResponse.data.data.link);
-
-        const image = await Image.create({
-          imgurLink: imgurResponse.data.data.link,
-          user: req.body.user,
-        });
-
-        imgurResponses.push(image);
-      } else {
-        console.error('Imgur upload failed:', imgurResponse.data);
-        return res.status(500).json({
-          success: false,
-          message: 'Imgur upload failed',
-        });
-      }
+    if (!req.file.buffer) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid file format',
+      });
     }
+
+    const base64Image = req.file.buffer.toString('base64');
+
+    const imgurResponse = await axios.post(
+      'https://api.imgur.com/3/image',
+      {
+        image: base64Image,
+      },
+      {
+        headers: {
+          Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+        },
+      }
+    );
+
+    const image = await Image.create({
+      image: imgurResponse.data.data.link,
+      user: req.body.user,
+    });
 
     res.status(200).json({
       success: true,
-      data: imgurResponses,
+      data: image,
     });
   } catch (err) {
     console.error(err);
@@ -119,14 +112,22 @@ exports.uploadImages = async (req, res) => {
 
 exports.updateImage = async (req, res) => {
   try {
-    req.body.user = req.user.id;
-
     const existingImage = await Image.findById(req.params.id);
 
     if (!existingImage) {
       return res.status(400).json({
         success: false,
         message: 'Image not found',
+      });
+    }
+
+    if (
+      existingImage.user.toString() !== req.user.id &&
+      req.user.role !== 'admin'
+    ) {
+      return res.status(401).json({
+        success: false,
+        message: `User ${req.user.id} is not authorized to update this image`,
       });
     }
 
@@ -158,18 +159,11 @@ exports.updateImage = async (req, res) => {
       }
     );
 
-    if (!imgurResponse.data.success) {
-      res.status(500).json({
-        success: false,
-        message: 'Imgur upload failed',
-      });
-    }
-
     const image = await Image.findByIdAndUpdate(
       req.params.id,
       {
-        imgurLink: imgurResponse.data.data.link,
-        user: req.body.user,
+        image: imgurResponse.data.data.link,
+        user: existingImage.user,
       },
       {
         new: true,
@@ -198,6 +192,13 @@ exports.deleteImage = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Image not found',
+      });
+    }
+
+    if (image.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({
+        success: false,
+        message: `User ${req.user.id} is not authorized to delete this image`,
       });
     }
 
