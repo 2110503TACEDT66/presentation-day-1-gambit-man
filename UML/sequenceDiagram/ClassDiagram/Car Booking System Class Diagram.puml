@@ -32,6 +32,17 @@ package "Car Booking"{
         <<DELETE>> +deleteProvider(): void
     }
 
+    class "<<Resource>>\nProvider" as ResourceImage{
+        <<GET>> +getImages():Image
+        <<POST>> +uploadImages():Image
+    }
+
+    class "<<Resource>>\nImage" as ResourceImage2{
+        <<GET>> +getImage():Image
+        <<PUT>> +updateImage():Image
+        <<DELETE>> +deleteImage(): void
+    }
+
     class "<<Representation>>\nBooking" as RepresentationBooking {
         -BookingDate
         -user
@@ -54,6 +65,12 @@ package "Car Booking"{
         -tel
     }
 
+    class "<<Representation>>\nImage" as RepresentationImage {
+        -name
+        -address
+        -tel
+    }
+
 
 }
 
@@ -61,6 +78,7 @@ CarBooking ..> ResourceAuth:"/api/v1/auth/register\n<<Path>>"
 CarBooking ..> ResourceAuth:"/api/v1/auth/login\n<<Path>>"
 CarBooking ..> ResourceAuth:"/api/v1/auth/me\n<<Path>>"
 CarBooking ..> ResourceAuth:"/api/v1/auth/logout\n<<Path>>"
+
 
 CarBooking ..> ResourceBooking:"/api/v1/bookings"
 
@@ -71,6 +89,10 @@ ResourceAuth ..>RepresentationUser: "<<use>>"
 ResourceBooking2 ..>RepresentationBooking: "<<use>>"
 ResourceProvider ..> ResourceProvider2: "/{providerId}"
 ResourceProvider2 ..>RepresentationProvider:"<<use>>"
+
+CarBooking ..> ResourceImage:"/api/v1/bookings"
+ResourceImage ..> ResourceImage2:"/{imageId}"
+ResourceImage2 ..> RepresentationImage:"<<use>>"
 ' ResourceAuth ..> ResourceHospital: "/{hospitalId}\n<<Path>>"
 ' ResourceHospital ..> RepresentationHospital: "<<use>>"
 
