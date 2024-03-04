@@ -7,18 +7,18 @@ exports.getBookings = async (req, res, next) => {
 
     if (req.user.role !== 'admin') {
       query = Booking.find({ user: req.user.id }).populate({
-        path: 'provider',
+        path: 'provider user',
         select: 'name address tel',
       });
     } else {
       if (req.params.providerId) {
         query = Booking.find({ provider: req.params.providerId }).populate({
-          path: 'provider',
+          path: 'provider user',
           select: 'name address tel',
         });
       } else {
         query = Booking.find().populate({
-          path: 'provider',
+          path: 'provider user',
           select: 'name address tel',
         });
       }
@@ -42,7 +42,7 @@ exports.getBookings = async (req, res, next) => {
 exports.getBooking = async (req, res, next) => {
   try {
     const booking = await Booking.findById(req.params.id).populate({
-      path: 'provider',
+      path: 'provider user',
       select: 'name address tel',
     });
 
