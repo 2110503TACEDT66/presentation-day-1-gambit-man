@@ -15,6 +15,10 @@ const BookingSchema = new mongoose.Schema({
     ref: 'Provider',
     required: [true, 'Please add an provider'],
   },
+  car: {
+    type: String,
+    require: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

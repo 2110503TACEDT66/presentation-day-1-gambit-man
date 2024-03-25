@@ -6,17 +6,20 @@ rectangle "Car Booking System" as CarBookingSystem {
     usecase "View\nRental Provider" as ViewRental
     usecase "Manage\nBooking" as ManageBooking
     usecase "Manage\nRental Provider" as ManageRental
+    usecase "User\nProfile Image" as UserProfileimage
 }
 
 user -- Register
 user -- ViewRental
 user -- ManageBooking
+user -- UserProfileimage
 
 actor "Admin" as Admin
 Register -- Admin
 ViewRental -- Admin
 ManageBooking -- Admin
 ManageRental -- Admin
+UserProfileimage -- Admin
 
 
 @enduml

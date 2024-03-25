@@ -2,13 +2,13 @@ const express = require('express');
 const {
   getImages,
   getImage,
-  uploadImages,
+  uploadImage,
   updateImage,
   deleteImage,
 } = require('../controllers/images');
 
 const router = express.Router({ mergeParams: true });
-const { protect } = require('../middleware/auth');
+const { protect, authorization } = require('../middleware/auth');
 
 const multer = require('multer');
 
@@ -18,12 +18,17 @@ const upload = multer({ storage: storage });
 router
   .route('/')
   .get(protect, getImages)
-  .post(protect, upload.array('images', 10), uploadImages);
+  .post(protect, upload.single('image'), uploadImage);
 
 router
   .route('/:id')
   .get(protect, getImage)
-  .put(protect, upload.single('image'), updateImage)
-  .delete(protect, deleteImage);
+  .put(
+    protect,
+    authorization('admin', 'user'),
+    upload.single('image'),
+    updateImage
+  )
+  .delete(protect, authorization('admin', 'user'), deleteImage);
 
 module.exports = router;
