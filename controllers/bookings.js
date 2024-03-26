@@ -140,7 +140,6 @@ exports.updateBooking = async (req, res, next) => {
       success: false,
       message: 'Cannot update booking',
     });
-    
   }
 };
 
