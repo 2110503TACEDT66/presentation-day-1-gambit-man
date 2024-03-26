@@ -1,43 +1,146 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const Provider = require('../models/Provider');
 
-exports.protect = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-
-  if (!token || token == 'null') {
-    return res
-      .status(401)
-      .json({ success: false, message: 'Not authorize to access this route' });
-  }
-
+exports.getProviders = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
-    req.user = await User.findById(decoded.id);
-    next();
+    let query;
+
+    const reqQuery = { ...req.query };
+    const removeFields = ['select', 'sort', 'page', 'limit'];
+    removeFields.forEach((param) => delete reqQuery[param]);
+
+    let queryStr = JSON.stringify(reqQuery);
+    queryStr = queryStr.replace(
+      /\b(gt|gte|lt|lte|in)\b/g,
+      (match) => `$${match}`
+    );
+
+    query = Provider.find(JSON.parse(queryStr)).populate('bookings');
+
+    if (req.query.select) {
+      const fields = req.query.select.split(',').join(' ');
+      query = query.select(fields);
+    }
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('name');
+    }
+
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 25;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const total = await Provider.countDocuments();
+
+    query = query.skip(startIndex).limit(limit);
+
+    const providers = await query;
+
+    const pagination = {};
+    if (endIndex < total) {
+      pagination.next = {
+        page: page + 1,
+        limit,
+      };
+    }
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit,
+      };
+    }
+    res.status(200).json({
+      success: true,
+      count: providers.length,
+      pagination,
+      data: providers,
+    });
   } catch (err) {
-    console.log(err.stack);
-    return res
-      .status(401)
-      .json({ success: false, message: 'Not authorize to access this route' });
+    res.status(400).json({
+      success: false,
+    });
   }
 };
 
-exports.authorization = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({
+exports.getProvider = async (req, res, next) => {
+  try {
+    const provider = await Provider.findById(req.params.id);
+
+    if (!provider) {
+      return res.status(400).json({
         success: false,
-        message: `User role ${req.user.role} is not authorized to access this route`,
       });
     }
-    next();
-  };
+
+    res.status(200).json({
+      success: true,
+      data: provider,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+exports.createProvider = async (req, res, next) => {
+  try {
+    const provider = await Provider.create(req.body);
+    res.status(201).json({
+      success: true,
+      data: provider,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+exports.updateProvider = async (req, res, next) => {
+  try {
+    const provider = await Provider.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!provider) {
+      return res.status(400).json({
+        success: false,
+      });
+    }
+    res.status(200).json({
+      success: true,
+      data: provider,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+    });
+  }
+};
+
+exports.deleteProvider = async (req, res, next) => {
+  try {
+    const provider = await Provider.findById(req.params.id);
+
+    if (!provider) {
+      return res.status(400).json({
+        success: false,
+      });
+    }
+
+    await provider.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+    });
+  }
 };
